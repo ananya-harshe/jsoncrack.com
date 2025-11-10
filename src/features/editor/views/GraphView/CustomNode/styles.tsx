@@ -30,7 +30,12 @@ export const StyledForeignObject = styled.foreignObject<{ $isObject?: boolean }>
   font-size: 12px;
   font-weight: 500;
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
 
   &.searched {
     background: rgba(27, 255, 0, 0.1);
@@ -52,6 +57,32 @@ export const StyledForeignObject = styled.foreignObject<{ $isObject?: boolean }>
     height: 100%;
     overflow: hidden;
     cursor: pointer;
+  }
+`;
+
+export const NodeContentWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto; /* allow interactions inside the foreignObject */
+`;
+
+export const EditButton = styled.button`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.08);
+  color: ${({ theme }) => theme.INTERACTIVE_NORMAL};
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 3;
+
+  &:hover {
+    background: rgba(0,0,0,0.08);
   }
 `;
 

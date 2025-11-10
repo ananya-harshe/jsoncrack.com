@@ -4,6 +4,8 @@ import { NODE_DIMENSIONS } from "../../../../../constants/graph";
 import type { NodeData } from "../../../../../types/graph";
 import { TextRenderer } from "./TextRenderer";
 import * as Styled from "./styles";
+import useGraph from "../stores/useGraph";
+import { useModal } from "../../../../../store/useModal";
 
 type RowProps = {
   row: NodeData["text"][number];
@@ -34,20 +36,35 @@ const Row = ({ row, x, y, index }: RowProps) => {
   );
 };
 
-const Node = ({ node, x, y }: CustomNodeProps) => (
-  <Styled.StyledForeignObject
-    data-id={`node-${node.id}`}
-    width={node.width}
-    height={node.height}
-    x={0}
-    y={0}
-    $isObject
-  >
-    {node.text.map((row, index) => (
-      <Row key={`${node.id}-${index}`} row={row} x={x} y={y} index={index} />
-    ))}
-  </Styled.StyledForeignObject>
-);
+const Node = ({ node, x, y }: CustomNodeProps) => {
+  const setSelectedNode = useGraph(state => state.setSelectedNode);
+  const setVisible = useModal(state => state.setVisible);
+
+  const handleNodeClick = (ev: React.MouseEvent) => {
+    ev.stopPropagation();
+    if (setSelectedNode) setSelectedNode(node as NodeData);
+    if (setVisible) setVisible("NodeModal", true);
+  };
+
+  return (
+    <Styled.StyledForeignObject
+      data-id={`node-${node.id}`}
+      width={node.width}
+      height={node.height}
+      x={0}
+      y={0}
+      $isObject
+      onClick={handleNodeClick}
+      style={{ cursor: "pointer" }}
+    >
+      <Styled.NodeContentWrapper>
+        {node.text.map((row, index) => (
+          <Row key={`${node.id}-${index}`} row={row} x={x} y={y} index={index} />
+        ))}
+      </Styled.NodeContentWrapper>
+    </Styled.StyledForeignObject>
+  );
+};
 
 function propsAreEqual(prev: CustomNodeProps, next: CustomNodeProps) {
   return (
